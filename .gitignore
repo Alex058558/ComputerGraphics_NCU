@@ -1,0 +1,35 @@
+# Note 資料夾 - 個人學習筆記
+Note/
+
+# 系統檔案
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 編輯器設定檔
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 編譯檔案
+*.class
+*.o
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 暫存檔案
+*.tmp
+*.temp
+*.log
+*.cache
+
+# Processing 特定檔案
+application.*/
