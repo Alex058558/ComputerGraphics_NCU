@@ -102,6 +102,28 @@ public class Button extends Box {
 
 }
 
+public class HierarchyButton extends Button {
+    String name;
+    Shape shape;
+
+    public HierarchyButton(float x, float y, float w, float h) {
+        super(x, y, w, h);
+    }
+
+    public HierarchyButton(Vector3 p, Vector3 s) {
+        super(p, s);
+    }
+
+    @Override
+    public void show() {
+        super.show();
+        textAlign(CENTER, CENTER);
+        textSize(15);
+        fill(0);
+        text(name, pos.x + 100, pos.y + 15);
+    }
+}
+
 public class ShapeButton extends Button {
     private boolean selected = false;
 
@@ -124,7 +146,6 @@ public class ShapeButton extends Button {
     }
 
     public void beSelect() {
-        resetButton();
         setSelected(true);
     }
 
@@ -132,8 +153,8 @@ public class ShapeButton extends Button {
         selected = b;
     }
 
-    public Renderer getRendererType() {
+    public Shape renderShape() {
         return null;
     }
-}
 
+}
