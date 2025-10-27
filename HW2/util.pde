@@ -1,290 +1,68 @@
 public void CGLine(float x1, float y1, float x2, float y2) {
     // TODO HW1
-    // You need to implement the "line algorithm" in this section.
-    // You can use the function line(x1, y1, x2, y2); to verify the correct answer.
-    // However, remember to comment out before you submit your homework.
-    // Otherwise, you will receive a score of 0 for this part.
-    // Utilize the function drawPoint(x, y, color) to apply color to the pixel at
-    // coordinates (x, y).
-    // For instance: drawPoint(114, 514, color(255, 0, 0)); signifies drawing a red
-    // point at (114, 514).
+    // Please paste your code from HW1 CGLine.
+    // 將浮點數轉換為整數
+    int xStart = round(x1);
+    int yStart = round(y1);
+    int xEnd = round(x2);
+    int yEnd = round(y2);
 
-    // =================================================================
-    // (Bresenham's Line Algorithm)
-    // =================================================================
+    // 計算差值
+    int dx = abs(xEnd - xStart);
+    int dy = abs(yEnd - yStart);
 
-    // Floating-point to Integer Conversion
-    int ix1 = Math.round(x1), iy1 = Math.round(y1);
-    int ix2 = Math.round(x2), iy2 = Math.round(y2);
+    // 判斷畫線的方向
+    int sx = xStart < xEnd ? 1 : -1;  // x 增加或減少方向
+    int sy = yStart < yEnd ? 1 : -1;  // y 增加或減少方向
+
+    boolean isSteep = dy > dx;  // 判斷斜率是否大於 1
     
-    // Calculate the total number of pixels to move in the x direction 
-    // (the horizontal distance of the straight line, must be a positive number).
-    int dx = Math.abs(ix2 - ix1);
-
-    // Calculate the total number of pixels to move in the y direction 
-    // (the vertical distance of the straight line, must be a positive number).
-    int dy = Math.abs(iy2 - iy1);
-    
-    // Decide whether to move forward or backward in the x(y) direction: to the right (+1) 
-    // or to the left (-1).
-    int sx = (ix1 < ix2) ? 1 : -1;
-    int sy = (iy1 < iy2) ? 1 : -1;
-
-    // Initialize the error term for Bresenham's algorithm.
-    // Determines when to step in the y direction as we draw the line.
-    int err = dx - dy;
-
-    // Given initial value
-    int x = ix1 , y = iy1;
-
-    // Color variables
-    int pink = color(255, 182, 193);
-    int black = color(0 , 0 , 0);
-    
-    while (true) {
-      drawPoint(x, y , pink);
-      if(x == ix2 && y == iy2) break;
-
-      // Avoid decimal calculations
-      int e2 = 2 * err;
-      if(e2 > -dy) {
-        err -= dy;
-        x += sx;
-      }
-      if(e2 < dx) {
-        err += dx;
-        y += sy;
-      }
+    // 如果斜率大於 1，交換 dx 和 dy，使得主要沿 x 軸繪製
+    if (isSteep) {
+        int temp = dx;
+        dx = dy;
+        dy = temp;
     }
     
-
-    /*
-     stroke(0);
-     noFill();
-     line(x1,y1,x2,y2);
-    */
-
-   
-}
-
-public void CGCircle(float x, float y, float r) {
-    // TODO HW1
-    // You need to implement the "circle algorithm" in this section.
-    // You can use the function circle(x, y, r); to verify the correct answer.
-    // However, remember to comment out before you submit your homework.
-    // Otherwise, you will receive a score of 0 for this part.
-    // Utilize the function drawPoint(x, y, color) to apply color to the pixel at
-    // coordinates (x, y).
-
-    // =================================================================
-    // (Midpoint Circle Algorithm)
-    // =================================================================
+    int d = 2 * dy - dx;  // 初始決策參數
+    int x = xStart, y = yStart;
     
-    // Step1. Floating-point to integer coordinates
-    int cx = Math.round(x);
-    int cy = Math.round(y);
-    int radius = Math.round(r);
-    
-    // Step2. Initialize the parameters of the midpoint circle algorithm
-    int xi = 0;
-    int yi = radius;
-    int d = 1 - radius;
-    
-    // Step3. Define drawing colors 
-    int circleColor = color(255, 182, 193); 
-    
-    // Step4. Main algorithm loop: Continue calculating while x <= y
-    do {
-        drawPoint(cx + xi, cy + yi, circleColor);
-        drawPoint(cx - xi, cy + yi, circleColor);
-        drawPoint(cx + xi, cy - yi, circleColor);
-        drawPoint(cx - xi, cy - yi, circleColor);
-        drawPoint(cx + yi, cy + xi, circleColor);
-        drawPoint(cx - yi, cy + xi, circleColor);
-        drawPoint(cx + yi, cy - xi, circleColor);
-        drawPoint(cx - yi, cy - xi, circleColor);
-        
-        if (d < 0) {
-            d = d + 2 * xi + 3;
+    // 畫出初始點
+    drawPoint(x, y, color(0));
+    // 開始畫線
+    for (int i = 0; i < dx; i++) {
+        if (d > 0) {
+            if (isSteep) {
+                x += sx;  // 交換後的情況，x 和 y 的角色對調
+            } else {
+                y += sy;
+            }
+            d -= 2 * dx;
+        }
+        if (isSteep) {
+            y += sy;  // 交換後的情況
         } else {
-            d = d + 2 * (xi - yi) + 5;
-            yi--;
+            x += sx;
         }
-        xi++;
-        
-    } while (xi < yi);
+        d += 2 * dy;
 
-    /*
-    stroke(0);
-    noFill();
-    circle(x,y,r*2);
-    */
+        // 畫出當前點
+        drawPoint(x, y, color(0));
+        
+    }
 }
 
-public void CGEllipse(float x, float y, float r1, float r2) {
-    // TODO HW1
-    // You need to implement the "ellipse algorithm" in this section.
-    // You can use the function ellipse(x, y, r1,r2); to verify the correct answer.
-    // However, remember to comment out the function before you submit your homework.
-    // Otherwise, you will receive a score of 0 for this part.
-    // Utilize the function drawPoint(x, y, color) to apply color to the pixel at
-    // coordinates (x, y).
-
-    // =================================================================
-    // (Midpoint Ellipse Algorithm)
-    // =================================================================
-    
-    int cx = Math.round(x);
-    int cy = Math.round(y);
-    int rx = Math.round(r1);
-    int ry = Math.round(r2);
-    
-    int rx2 = rx * rx;
-    int ry2 = ry * ry;
-    int twoRx2 = 2 * rx2;
-    int twoRy2 = 2 * ry2;
-    
-    int ellipseColor = color(255, 182, 193);
-    
-    int xi = 0;
-    int yi = ry;
-    
-    int p1 = ry2 - (rx2 * ry) + (rx2 / 4);
-    int dx = twoRy2 * xi;
-    int dy = twoRx2 * yi;
-    
-    while (dx < dy) {
-        drawPoint(cx + xi, cy + yi, ellipseColor);
-        drawPoint(cx - xi, cy + yi, ellipseColor);
-        drawPoint(cx + xi, cy - yi, ellipseColor);
-        drawPoint(cx - xi, cy - yi, ellipseColor);
-        
-        if (p1 < 0) {
-            xi++;
-            dx += twoRy2;
-            p1 += dx + ry2;
-        } else {
-            xi++;
-            yi--;
-            dx += twoRy2;
-            dy -= twoRx2;
-            p1 += dx - dy + ry2;
-        }
-    }
-    
-    int p2 = ry2 * (xi * xi + xi) + rx2 * (yi - 1) * (yi - 1) - rx2 * ry2;
-    
-    while (yi > 0) {
-        drawPoint(cx + xi, cy + yi, ellipseColor);
-        drawPoint(cx - xi, cy + yi, ellipseColor);
-        drawPoint(cx + xi, cy - yi, ellipseColor);
-        drawPoint(cx - xi, cy - yi, ellipseColor);
-        
-        if (p2 > 0) {
-            yi--;
-            dy -= twoRx2;
-            p2 += rx2 - dy;
-        } else {
-            yi--;
-            xi++;
-            dx += twoRy2;
-            dy -= twoRx2;
-            p2 += dx - dy + rx2;
-        }
-    }
-
-    /*
-    stroke(0);
-    noFill();
-    ellipse(x,y,r1*2,r2*2);
-    */
-
-}
-
-public void CGCurve(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4) {
-    // TODO HW1
-    // You need to implement the "bezier curve algorithm" in this section.
-    // You can use the function bezier(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x,
-    // p4.y); to verify the correct answer.
-    // However, remember to comment out before you submit your homework.
-    // Otherwise, you will receive a score of 0 for this part.
-    // Utilize the function drawPoint(x, y, color) to apply color to the pixel at
-    // coordinates (x, y).
-
-    // =================================================================
-    // (Cubic Bézier Curve Algorithm)
-    // (De Casteljau's Algorithm)
-    // =================================================================
-    
-    int curveColor = color(255, 182, 193);
-    
-    float totalDistance = distance(p1, p2) + distance(p2, p3) + distance(p3, p4);
-    int steps = max(50, (int)(totalDistance * 0.5));
-    steps = min(steps, 500);
-    
-    float stepSize = 1.0 / steps;
-    
-    for (int i = 0; i <= steps; i++) {
-        float t = i * stepSize;
-        
-        float q1x = (1 - t) * p1.x + t * p2.x;
-        float q1y = (1 - t) * p1.y + t * p2.y;
-        
-        float q2x = (1 - t) * p2.x + t * p3.x;
-        float q2y = (1 - t) * p2.y + t * p3.y;
-        
-        float q3x = (1 - t) * p3.x + t * p4.x;
-        float q3y = (1 - t) * p3.y + t * p4.y;
-        
-        float r1x = (1 - t) * q1x + t * q2x;
-        float r1y = (1 - t) * q1y + t * q2y;
-        
-        float r2x = (1 - t) * q2x + t * q3x;
-        float r2y = (1 - t) * q2y + t * q3y;
-        
-        float bezierX = (1 - t) * r1x + t * r2x;
-        float bezierY = (1 - t) * r1y + t * r2y;
-        
-        drawPoint(bezierX, bezierY, curveColor);
-    }
-    
-
-    /*
-    stroke(0);
-    noFill();
-    bezier(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,p4.x,p4.y);
-    */
-}
-
-public void CGEraser(Vector3 p1, Vector3 p2) {
-    // TODO HW1
-    // You need to erase the scene in the area defined by points p1 and p2 in this
-    // section.
-    // p1 ------
-    // |       |
-    // |       |
-    // ------ p2
-    // The background color is color(250);
-    // You can use the mouse wheel to change the eraser range.
-    // Utilize the function drawPoint(x, y, color) to apply color to the pixel at
-    // coordinates (x, y).
-
-    int x1 = int(min(p1.x, p2.x));
-    int x2 = int(max(p1.x, p2.x));
-    int y1 = int(min(p1.y, p2.y));
-    int y2 = int(max(p1.y, p2.y));
-    
-    for (int x = x1; x <= x2; x++) {
-        for (int y = y1; y <= y2; y++) {
-            drawPoint(x, y, color(250));
-        }
-    }
-
+public boolean outOfBoundary(float x, float y) {
+    if (x < 0 || x >= width || y < 0 || y >= height)
+        return true;
+    return false;
 }
 
 public void drawPoint(float x, float y, color c) {
-    stroke(c);
-    point(x, y);
+    int index = (int) y * width + (int) x;
+    if (outOfBoundary(x, y))
+        return;
+    pixels[index] = c;
 }
 
 public float distance(Vector3 a, Vector3 b) {
@@ -292,3 +70,150 @@ public float distance(Vector3 a, Vector3 b) {
     return sqrt(Vector3.dot(c, c));
 }
 
+boolean pnpoly(float x, float y, Vector3[] vertexes) {
+    // TODO HW2 
+    // You need to check the coordinate p(x,v) if inside the vertices. 
+    // If yes return true, vice versa.
+    int n = vertexes.length;
+      boolean inside = false;
+      for (int i = 0, j = n - 1; i < n; j = i++) {
+          if (((vertexes[i].y > y) != (vertexes[j].y > y)) &&
+              (x < (vertexes[j].x - vertexes[i].x) * (y - vertexes[i].y) / (vertexes[j].y - vertexes[i].y) + vertexes[i].x)) {
+              inside = !inside;
+          }
+      }
+    return inside;
+    //return false;
+}
+
+public Vector3[] findBoundBox(Vector3[] v) {
+    
+    
+    // TODO HW2 
+    // You need to find the bounding box of the vertices v.
+    // r1 -------
+    //   |   /\  |
+    //   |  /  \ |
+    //   | /____\|
+    //    ------- r2
+    // 初始化最小和最大值，用於找到包圍盒的邊界
+    float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, minZ = Float.MAX_VALUE;
+    float maxX = Float.MIN_VALUE, maxY = Float.MIN_VALUE, maxZ = Float.MIN_VALUE;
+    
+    // 遍歷每個頂點，更新最小和最大值
+    for (Vector3 vert : v) {
+        minX = Math.min(minX, vert.x);
+        minY = Math.min(minY, vert.y);
+        minZ = Math.min(minZ, vert.z);
+        maxX = Math.max(maxX, vert.x);
+        maxY = Math.max(maxY, vert.y);
+        maxZ = Math.max(maxZ, vert.z);
+    }
+
+    // 用計算的邊界值創建包圍盒的兩個對角頂點
+    Vector3 recordminV = new Vector3(minX, minY, minZ);
+    Vector3 recordmaxV = new Vector3(maxX, maxY, maxZ);
+    
+    // 返回包圍盒頂點數組
+    Vector3[] result = { recordminV, recordmaxV };
+    return result;
+}
+
+public Vector3[] Sutherland_Hodgman_algorithm(Vector3[] points, Vector3[] boundary) {
+    ArrayList<Vector3> input = new ArrayList<Vector3>();
+    ArrayList<Vector3> output = new ArrayList<Vector3>();
+    for (int i = 0; i < points.length; i += 1) {
+        input.add(points[i]);
+    }
+
+    // TODO HW2
+    // Implement the Sutherland-Hodgman Algorithm here.
+    // The function receives two parameters: 'points' (vertices of the polygon to be clipped)
+    // and 'boundary' (vertices of the clipping polygon).
+    // The output is the vertices of the clipped polygon.
+
+    // Iterate over each edge of the clipping polygon (boundary)
+    for (int i = 0; i < boundary.length; i++) {
+        Vector3 A = boundary[i];
+        Vector3 B = boundary[(i + 1) % boundary.length];
+
+        // Initialize output list for this clipping edge
+        output = new ArrayList<Vector3>();
+
+        if (input.isEmpty()) {
+            // No vertices to clip
+            break;
+        }
+
+        // Start with the last point in the input list
+        Vector3 S = input.get(input.size() - 1);
+
+        for (int j = 0; j < input.size(); j++) {
+            Vector3 E = input.get(j);
+
+            if (isInside(E, A, B)) {
+                if (!isInside(S, A, B)) {
+                    // Compute and add intersection point
+                    Vector3 intersection = computeIntersection(S, E, A, B);
+                    output.add(intersection);
+                }
+                // Add the endpoint
+                output.add(E);
+            } else if (isInside(S, A, B)) {
+                // Compute and add intersection point
+                Vector3 intersection = computeIntersection(S, E, A, B);
+                output.add(intersection);
+            }
+            // Update S to be the current point E
+            S = E;
+        }
+
+        // Prepare for the next clipping edge
+        input = output;
+    }
+
+    Vector3[] result = new Vector3[output.size()];
+    for (int i = 0; i < result.length; i += 1) {
+        result[i] = output.get(i);
+    }
+    return result;
+}
+
+// Helper method to determine if a point is inside the clipping edge
+public boolean isInside(Vector3 P, Vector3 A, Vector3 B) {
+    // Edge vector
+    float edgeX = B.x - A.x;
+    float edgeY = B.y - A.y;
+    // Vector from A to point P
+    float vectorX = P.x - A.x;
+    float vectorY = P.y - A.y;
+    // Cross product
+    float cross = edgeX * vectorY - edgeY * vectorX;
+    // Point is inside if cross product is >= 0 (assuming counter-clockwise order)
+    return cross <= 0;
+}
+
+// Helper method to compute the intersection point between two lines
+public Vector3 computeIntersection(Vector3 S, Vector3 E, Vector3 A, Vector3 B) {
+    // Line segment from S to E
+    float x1 = S.x, y1 = S.y;
+    float x2 = E.x, y2 = E.y;
+    // Clipping edge from A to B
+    float x3 = A.x, y3 = A.y;
+    float x4 = B.x, y4 = B.y;
+
+    // Calculate the denominators
+    float denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+    if (denom == 0) {
+        // Lines are parallel; return endpoint
+        return new Vector3(E.x, E.y, E.z);
+    }
+
+    // Calculate intersection point
+    float px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom;
+    float py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom;
+
+    // Assuming z-coordinate remains the same (or you can set it as needed)
+    return new Vector3(px, py, 0);
+}

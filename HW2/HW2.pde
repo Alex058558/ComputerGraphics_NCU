@@ -1,183 +1,80 @@
-ShapeButton lineButton;
-ShapeButton circleButton;
-ShapeButton polygonButton;
-ShapeButton ellipseButton;
-ShapeButton curveButton;
-ShapeButton pencilButton;
-ShapeButton eraserButton;
+// Lab 2: UI Panels
+Panel hierarchyPanel;
+Panel inspectorPanel;
+Panel canvasPanel;
 
-Button clearButton;
+// Lab 2: 場景物件管理
+ArrayList<SceneObject> sceneObjects;
+SceneObject selectedObject;
 
-ShapeRenderer shapeRenderer;
-ArrayList<ShapeButton> shapeButton;
-float eraserSize = 20;
+// Lab 2: UI 按鈕
+Button addRectangleButton;
 
 public void setup() {
     size(1200, 800);
     background(255);
-    shapeRenderer = new ShapeRenderer();
-    initButton();
-
+    
+    // 初始化場景物件列表
+    sceneObjects = new ArrayList<SceneObject>();
+    selectedObject = null;
+    
+    // 初始化 UI 面板
+    initPanels();
+    initButtons();
 }
 
 public void draw() {
-
-    background(255);
-    for (ShapeButton sb : shapeButton) {
-        sb.run(() -> {
-            sb.beSelect();
-            shapeRenderer.setRenderer(sb.getRendererType());
-        });
+    background(240);
+    
+    // 繪製所有面板
+    canvasPanel.show();
+    hierarchyPanel.show();
+    inspectorPanel.show();
+    
+    // 繪製所有場景物件
+    for (SceneObject obj : sceneObjects) {
+        obj.draw();
     }
-
-    clearButton.run(() -> {
-        shapeRenderer.clear();
+    
+    // 繪製按鈕
+    addRectangleButton.run(() -> {
+        addRectangle();
     });
-    shapeRenderer.box.show();
-
-    shapeRenderer.run();
-
 }
 
-void resetButton() {
-    for (ShapeButton sb : shapeButton) {
-        sb.setSelected(false);
-    }
+// Lab 2: 初始化面板
+void initPanels() {
+    // Canvas 面板（中央大區域）
+    canvasPanel = new Panel(20, 50, 750, 730, "Canvas");
+    canvasPanel.setBackgroundColor(color(250));
+    
+    // Hierarchy 面板（左側）
+    hierarchyPanel = new Panel(790, 50, 180, 400, "Hierarchy");
+    hierarchyPanel.setBackgroundColor(color(230));
+    
+    // Inspector 面板（右側）
+    inspectorPanel = new Panel(990, 50, 190, 400, "Inspector");
+    inspectorPanel.setBackgroundColor(color(230));
 }
 
-public void initButton() {
-    shapeButton = new ArrayList<ShapeButton>();
-    lineButton = new ShapeButton(10, 10, 30, 30) {
-        @Override
-        public void show() {
-            super.show();
-            stroke(0);
-            line(pos.x + 2, pos.y + 2, pos.x + size.x - 2, pos.y + size.y - 2);
-        }
-
-        @Override
-        public Renderer getRendererType() {
-            return new LineRenderer();
-        }
-    };
-
-    lineButton.setBoxAndClickColor(color(250), color(150));
-    shapeButton.add(lineButton);
-
-    circleButton = new ShapeButton(45, 10, 30, 30) {
-        @Override
-        public void show() {
-            super.show();
-            stroke(0);
-            circle(pos.x + size.x / 2, pos.y + size.y / 2, size.x - 2);
-        }
-
-        @Override
-        public Renderer getRendererType() {
-            return new CircleRenderer();
-        }
-    };
-    circleButton.setBoxAndClickColor(color(250), color(150));
-    shapeButton.add(circleButton);
-
-    polygonButton = new ShapeButton(80, 10, 30, 30) {
-        @Override
-        public void show() {
-            super.show();
-            stroke(0);
-            line(pos.x + 2, pos.y + 2, pos.x + size.x - 2, pos.y + 2);
-            line(pos.x + 2, pos.y + size.y - 2, pos.x + size.x - 2, pos.y + size.y - 2);
-            line(pos.x + size.x - 2, pos.y + 2, pos.x + size.x - 2, pos.y + size.y - 2);
-            line(pos.x + 2, pos.y + 2, pos.x + 2, pos.y + size.y - 2);
-        }
-
-        @Override
-        public Renderer getRendererType() {
-            return new PolygonRenderer();
-        }
-
-    };
-
-    polygonButton.setBoxAndClickColor(color(250), color(150));
-    shapeButton.add(polygonButton);
-
-    ellipseButton = new ShapeButton(115, 10, 30, 30) {
-        @Override
-        public void show() {
-            super.show();
-            stroke(0);
-            ellipse(pos.x + size.x / 2, pos.y + size.y / 2, size.x - 2, size.y * 2 / 3);
-        }
-
-        @Override
-        public Renderer getRendererType() {
-            return new EllipseRenderer();
-        }
-
-    };
-
-    ellipseButton.setBoxAndClickColor(color(250), color(150));
-    shapeButton.add(ellipseButton);
-
-    curveButton = new ShapeButton(150, 10, 30, 30) {
-        @Override
-        public void show() {
-            super.show();
-            stroke(0);
-            bezier(pos.x, pos.y, pos.x, pos.y + size.y, pos.x + size.x, pos.y, pos.x + size.x, pos.y + size.y);
-        }
-
-        @Override
-        public Renderer getRendererType() {
-            return new CurveRenderer();
-        }
-
-    };
-
-    curveButton.setBoxAndClickColor(color(250), color(150));
-    shapeButton.add(curveButton);
-
-    clearButton = new Button(width - 50, 10, 30, 30);
-    clearButton.setBoxAndClickColor(color(250), color(150));
-    clearButton.setImage(loadImage("clear.png"));
-
-    pencilButton = new ShapeButton(185, 10, 30, 30) {
-        @Override
-        public Renderer getRendererType() {
-            return new PencilRenderer();
-        }
-    };
-    pencilButton.setImage(loadImage("pencil.png"));
-
-    pencilButton.setBoxAndClickColor(color(250), color(150));
-    shapeButton.add(pencilButton);
-
-    eraserButton = new ShapeButton(220, 10, 30, 30) {
-        @Override
-        public Renderer getRendererType() {
-            return new EraserRenderer();
-        }
-    };
-    eraserButton.setImage(loadImage("eraser.png"));
-
-    eraserButton.setBoxAndClickColor(color(250), color(150));
-    shapeButton.add(eraserButton);
-
+// Lab 2: 初始化按鈕
+void initButtons() {
+    // 新增矩形按鈕（在 Hierarchy 面板上方）
+    addRectangleButton = new Button(790, 10, 100, 30);
+    addRectangleButton.setBoxAndClickColor(color(100, 150, 255), color(70, 120, 220));
+    addRectangleButton.setLabel("Add Rect");
 }
 
-public void keyPressed() {
-    if (key == 'z' || key == 'Z') {
-        shapeRenderer.popShape();
-    }
-
+// Lab 2: 新增矩形到場景
+void addRectangle() {
+    // 在 Canvas 中心創建一個矩形
+    float centerX = canvasPanel.pos.x + canvasPanel.size.x / 2;
+    float centerY = canvasPanel.pos.y + canvasPanel.size.y / 2;
+    
+    SceneObject rect = new SceneObject("Rectangle", centerX, centerY);
+    sceneObjects.add(rect);
+    
+    println("Added Rectangle to scene");
 }
 
-void mouseWheel(MouseEvent event) {
-    float e = event.getCount();
-    if (e < 0)
-        eraserSize += 1;
-    else if (e > 0)
-        eraserSize -= 1;
-    eraserSize = max(min(eraserSize, 30), 4);
-}
 

@@ -2,4 +2,3 @@
 interface ButtonFunction {
     void function();
 }
-
