@@ -55,41 +55,23 @@ projection.m[14] = -1.0f;
 
 ### 3. Shader System 著色器系統
 
-實作可程式化著色管線
+實作基礎可程式化著色管線
 
 Vertex Shader 頂點著色器
-- 接收頂點屬性與 Uniform 變數
+- 接收頂點屬性（位置）與 Uniform 變數（MVP 矩陣）
 - 執行 MVP (Model-View-Projection) 變換
-- 輸出裁剪空間座標
+- 輸出裁剪空間座標（gl_Position）
 
 Fragment Shader 片段著色器
-- 接收插值後的 Varying 變數
+- 接收插值後的 Varying 變數（屏幕空間位置）
 - 計算最終像素顏色
-- 支援多種著色模型
+- 目前實作深度視覺化著色器
 
-著色模型
-- Flat Shading 平面著色：每個三角形使用單一顏色
-- Gouraud Shading Gouraud 著色：頂點著色並插值
-- Phong Shading Phong 著色：像素級光照計算
+Depth Shader 深度著色器
+- DepthVertexShader：執行 MVP 變換
+- DepthFragmentShader：將深度值轉換為灰階顏色顯示
 
-### 4. Lighting System 光照系統
-
-實作 Phong 光照模型
-
-光照組成
-- Ambient 環境光：模擬場景基礎照明
-- Diffuse 漫反射：根據表面法向量與光源方向計算
-- Specular 鏡面反射：模擬光澤表面的高光效果
-
-光照計算
-```
-color = ambient + diffuse * NdotL + specular * pow(RdotV, shininess)
-```
-
-- NdotL：法向量與光源方向的點積
-- RdotV：反射向量與視線方向的點積
-
-### 5. Depth Buffer 深度緩衝
+### 4. Depth Buffer 深度緩衝
 
 實作 Z-buffer 深度測試
 
@@ -111,7 +93,7 @@ if (GH_DEPTH[index] > z) {
 - 使用重心座標計算像素深度
 - 確保正確的遮擋關係
 
-### 6. Rasterization 光柵化
+### 5. Rasterization 光柵化
 
 三角形光柵化流程
 
@@ -130,7 +112,7 @@ Bounding Box 計算
 - 插值深度、顏色、法向量等屬性
 - 實現平滑的著色效果
 
-### 7. Rendering Pipeline 渲染管線
+### 6. Rendering Pipeline 渲染管線
 
 完整渲染流程
 
@@ -144,7 +126,7 @@ Bounding Box 計算
 8. 執行 Fragment Shader 計算顏色
 9. 寫入 Frame Buffer
 
-### 8. GameObject System 場景物件系統
+### 7. GameObject System 場景物件系統
 
 物件管理架構
 
