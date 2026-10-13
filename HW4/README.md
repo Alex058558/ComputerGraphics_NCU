@@ -297,7 +297,7 @@ Hierarchy 階層面板
 
 ## 工具
 
-Augment Code、Claude Code、ChatGPT
+Cursor、Claude Code、Codex
 
 
 

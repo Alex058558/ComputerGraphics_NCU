@@ -98,4 +98,4 @@
 
 ## 工具
 
-Augment Code、Claude Code、ChatGPT
+Cursor、Claude Code、Codex

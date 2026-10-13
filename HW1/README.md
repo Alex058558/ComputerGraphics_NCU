@@ -182,5 +182,5 @@ for (int x = x1; x <= x2; x++) {
 
 ## 工具
 
-Cursor、Claude Sonnet4、ChatGPT 4.1
+Cursor、Claude Code、Codex
 
